@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolución en India (1990-2035) – Visualización de Datos UOC</title>
+    <meta name="description"
+        content="Dashboard interactivo sobre la evolución socioeconómica, tecnológica y demográfica de la India. Proyecto final de la asignatura de Visualización de Datos."
+    <!-- Cargamos las fuentes de Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Cargamos la librería Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+
+<body>
+    <div class="glass-bg-blur"></div>
+    <div class="drawer-backdrop" id="drawer-backdrop"></div>
+    <div class="app-container">
+        <!-- Diseñamos la cabecera principal -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 id="main-title"><span class="devanagari-accent">भारत</span> | Evolución en India</h1>
+                <p class="subtitle" id="main-subtitle">Población, recursos y revolución digital (1990 - 2035)</p>
+                <p class="header-data-source">Datos: <a
+                        href="https://databank.worldbank.org/source/world-development-indicators" target="_blank"
+                        class="header-data-source-link"><strong>Banco Mundial (WDI)</strong></a></p>
+            </div>
+        </header>
+
+        <!-- Construimos el explorador y el panel de control -->
+        <div class="dashboard-body">
+            <!-- Diseñamos la barra lateral de controles -->
+            <aside class="control-panel" id="explorer-controls-panel" aria-label="Controles de Exploración">
+                <button class="close-drawer-btn" id="btn-close-explorer" aria-label="Cerrar Explorador">&times;</button>
+                <section class="panel-section">
+                    <h2 class="section-title">Explorador Libre</h2>
+                    <p class="section-desc">Modela las variables y rango temporal de forma libre y personalizada:</p>
+
+                    <div class="explorer-selectors">
+                        <div class="select-group" id="group-select-a">
+                            <label for="select-indicator-a">Variable Principal (Eje Y Izquierdo)</label>
+                            <select id="select-indicator-a" class="custom-select"></select>
+                        </div>
+                        <div class="select-group" id="group-select-b">
+                            <label for="select-indicator-b">Variable Secundaria (Eje Y Derecho)</label>
+                            <select id="select-indicator-b" class="custom-select"></select>
+                        </div>
+                    </div>
+
+                    <div class="chart-options-group">
+                        <div class="option-subgroup">
+                            <span class="option-label">Estilo visual:</span>
+                            <div class="chart-type-toggle">
+                                <button class="toggle-btn active" id="btn-type-line" data-type="line">Línea</button>
+                                <button class="toggle-btn" id="btn-type-bar" data-type="bar">Barras</button>
+                                <button class="toggle-btn" id="btn-type-area" data-type="area">Área</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Añadimos el conmutador de predicciones -->
+                    <div class="chart-options-group border-top-divider">
+                        <div class="option-subgroup prediction-toggle-container">
+                            <span class="option-label">Proyecciones Futuras (2026-2035):</span>
+                            <label class="switch-premium">
+                                <input type="checkbox" id="btn-toggle-prediction">
+                                <span class="slider-switch"></span>
+                            </label>
+                        </div>
+                        <p class="prediction-info-text">Modelado predictivo inteligente mediante Regresión Lineal de
+                            Mínimos Cuadrados.</p>
+                    </div>
+
+                    <!-- Añadimos el deslizador temporal -->
+                    <div class="timeline-range-container">
+                        <div class="timeline-labels">
+                            <span class="timeline-label">Rango de Años: <strong id="timeline-range-val">1990 -
+                                    2025</strong></span>
+                        </div>
+                        <div class="slider-track-container">
+                            <input type="range" id="slider-start-year" min="1990" max="2025" value="1990"
+                                class="year-slider">
+                            <input type="range" id="slider-end-year" min="1990" max="2025" value="2025"
+                                class="year-slider">
+                            <div class="slider-visual-track" id="slider-bar-track"></div>
+                        </div>
+                        <div class="slider-ticks">
+                            <span>1990</span>
+                            <span>2000</span>
+                            <span>2010</span>
+                            <span>2020</span>
+                            <span>2025</span>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+
+            <!-- Creamos el contenedor del gráfico y las historias -->
+            <main class="chart-view-panel" aria-label="Visualización Gráfica Principal">
+                <section class="chart-card glass-panel" id="main-chart-card-container">
+                    <div class="chart-header">
+                        <!-- Posicionamos los controles del stepper -->
+                        <div class="chart-header-row-1">
+                            <div class="story-stepper-container" id="storytelling-stepper-container">
+                                <button class="step-nav-btn" id="btn-story-prev" aria-label="Historia anterior">◀
+                                    Anterior</button>
+                                <div class="step-indicators">
+                                    <div class="step-dot active" data-story="digital" title="Paso 1: Conectividad">
+                                        <span class="step-num">1</span>
+                                        <span class="step-label">Conectividad</span>
+                                    </div>
+                                    <div class="step-line"></div>
+                                    <div class="step-dot" data-story="gdp" title="Paso 2: PIB vs Pobreza">
+                                        <span class="step-num">2</span>
+                                        <span class="step-label">PIB vs Pobreza</span>
+                                    </div>
+                                    <div class="step-line"></div>
+                                    <div class="step-dot" data-story="demo" title="Paso 3: Demografía">
+                                        <span class="step-num">3</span>
+                                        <span class="step-label">Demografía</span>
+                                    </div>
+                                    <div class="step-line"></div>
+                                    <div class="step-dot" data-story="summary" title="Paso 4: Síntesis del Desarrollo">
+                                        <span class="step-num">4</span>
+                                        <span class="step-label">Síntesis</span>
+                                    </div>
+                                </div>
+                                <button class="step-nav-btn" id="btn-story-next"
+                                    aria-label="Siguiente historia">Siguiente ▶</button>
+                                <span class="step-divider"></span>
+                                <button class="story-btn" id="btn-open-explorer">🎛️ Explorador Libre</button>
+                            </div>
+                        </div>
+
+                        <!-- Centramos el título de la visualización -->
+                        <div class="chart-header-row-2">
+                            <div class="chart-title-group">
+                                <h2 id="chart-display-title">Visualización de Evolución</h2>
+                            </div>
+                        </div>
+
+                        <!-- Mostramos las leyendas y la correlación -->
+                        <div class="chart-header-row-3">
+                            <div class="legend-inline-header">
+                                <span class="legend-item">
+                                    <span class="dot dot-indigo"></span>
+                                    <span id="legend-label-a" class="legend-text-truncate"
+                                        title="Variable Eje Izquierdo">Eje Izq</span>
+                                </span>
+                                <span class="legend-item">
+                                    <span class="dot dot-cyan"></span>
+                                    <span id="legend-label-b" class="legend-text-truncate"
+                                        title="Variable Eje Derecho">Eje Der</span>
+                                </span>
+                                <span class="legend-item" id="legend-item-c" style="display: none;">
+                                    <span class="dot dot-gray" style="background-color: #64748b;"></span>
+                                    <span id="legend-label-c" class="legend-text-truncate"
+                                        title="Tamaño de la Burbuja">Tamaño: Población Total</span>
+                                </span>
+                            </div>
+
+                            <!-- Sincronizamos la correlación en tiempo real -->
+                            <div class="correlation-display" id="correlation-panel">
+                                <span class="correlation-label">Correlación Temporal</span>
+                                <div class="correlation-badge" id="correlation-badge">
+                                    <span class="r-symbol">r = </span><strong id="val-correlation">--</strong>
+                                    <span class="correlation-text" id="text-correlation">Sin datos</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="main-interactive-chart"></canvas>
+                        <!-- Renderizamos las tarjetas de insights flotantes -->
+                        <div class="chart-insight-card" id="chart-insight-card">
+                            <p class="insight-text">La digitalización de India no empezó con Internet, sino con la
+                                llegada de la electricidad. Una vez conectados los hogares a la energía, el salto hacia
+                                la tecnología se acelera.</p>
+                        </div>
+                        <div class="chart-insight-card" id="chart-insight-card-bubble">
+                            <p class="insight-text">A medida que India crece, millones de personas salen de la pobreza
+                                extrema. El progreso económico no ha sido solo un número, también ha cambiado las
+                                condiciones de vida.</p>
+                        </div>
+                        <div class="chart-insight-card" id="chart-insight-card-demo">
+                            <p class="insight-text">Durante décadas, India ha crecido con fuerza. Hoy el crecimiento
+                                continúa, pero más moderado: el país entra en una etapa demográfica más estable.</p>
+                        </div>
+                        <div class="chart-insight-card" id="chart-insight-card-summary">
+                            <p class="insight-text">Tendencia y previsión: más conectividad, menos pobreza. India se
+                                digitaliza mientras mejora progresivamente sus condiciones de vida.</p>
+                        </div>
+                        <div class="chart-insight-card" id="chart-insight-card-hito">
+                            <p class="insight-text" id="chart-insight-text-hito"></p>
+                        </div>
+                        <!-- Añadimos el indicador de carga -->
+                        <div class="chart-loader" id="chart-loading-indicator">
+                            <div class="spinner"></div>
+                            <span>Calculando modelos estadísticos...</span>
+                        </div>
+                    </div>
+
+                    <!-- Diseñamos la línea de tiempo decadal -->
+                    <div class="integrated-timeline-wrapper">
+                        <!-- Mostramos el banner informativo del timeline -->
+                        <div class="timeline-banner-container">
+                            <div class="timeline-banner-pill">
+                                <span class="banner-title-text">Hitos por Décadas</span>
+                                <span class="banner-divider"></span>
+                                <span class="banner-subtitle-text">Haz clic para explorar</span>
+                            </div>
+                        </div>
+
+                        <div class="decadal-timeline-container" id="timeline-hitos">
+                            <!-- Diseñamos el fondo de la cinta de conexión -->
+                            <div class="timeline-ribbon-line"></div>
+
+                            <!-- Creamos la columna de los años 90 -->
+                            <div class="timeline-col col-violet" data-decade="1990" id="col-decade-1990">
+                                <span class="timeline-top-label">Apertura y Telefonía Móvil</span>
+                                <div class="timeline-connector-pin"></div>
+                                <button class="timeline-decade-bubble" aria-label="Explorar década 1990">1990s</button>
+                                <div class="timeline-connector-downline"></div>
+                                <div class="timeline-desc-card">
+                                    <img src="images/foto_1990.jpg" alt="Apertura y Telefonía Móvil 1990s"
+                                        class="timeline-card-img">
+                                    <h4 class="card-decade-title">Apertura y Telefonia Móvil</h4>
+                                    <p class="card-decade-desc">Reformas del gobierno mejoran el PIB e inicio de la
+                                        telefonía móvil en 1995, comienza el desarrollo en comunicaciones.</p>
+                                </div>
+                            </div>
+
+                            <!-- Creamos la columna de los años 2000 -->
+                            <div class="timeline-col col-sky" data-decade="2005" id="col-decade-2005">
+                                <span class="timeline-top-label">Red Eléctrica</span>
+                                <div class="timeline-connector-pin"></div>
+                                <button class="timeline-decade-bubble" aria-label="Explorar década 2000">2000s</button>
+                                <div class="timeline-connector-downline"></div>
+                                <div class="timeline-desc-card">
+                                    <img src="images/foto_2000.jpg" alt="Red Eléctrica 2000s" class="timeline-card-img">
+                                    <h4 class="card-decade-title">Red Eléctrica</h4>
+                                    <p class="card-decade-desc">Plan Eléctrico de 2005. Electrificación rural masiva, se
+                                        eleva la cobertura del 50% al 75% aprox.</p>
+                                    <a href="https://www.indiabudget.gov.in/budget_archive/es2004-05/chapt2005/chap93.pdf"
+                                        target="_blank" class="timeline-card-link">🌐 Fuente Consultada</a>
+                                </div>
+                            </div>
+
+                            <!-- Creamos la columna de los años 2010 -->
+                            <div class="timeline-col col-emerald" data-decade="2016" id="col-decade-2016">
+                                <span class="timeline-top-label">Revolución 4G</span>
+                                <div class="timeline-connector-pin"></div>
+                                <button class="timeline-decade-bubble" aria-label="Explorar década 2010">2010s</button>
+                                <div class="timeline-connector-downline"></div>
+                                <div class="timeline-desc-card">
+                                    <img src="images/foto_2010.jpg" alt="Revolución 4G 2010s" class="timeline-card-img">
+                                    <h4 class="card-decade-title">Revolución 4G</h4>
+                                    <p class="card-decade-desc">Jio rebaja sus tarifas de internet en 2016. La adopción
+                                        móvil se dispara del 20% al 55% a nivel nacional.</p>
+                                    <a href="https://impactotic.co/micrositios-tic/chipset-2023/chipset-jio-el-fenomeno-de-la-telefonia-movil-en-la-india/"
+                                        target="_blank" class="timeline-card-link">🌐 Fuente Consultada</a>
+                                </div>
+                            </div>
+
+                            <!-- Creamos la columna de los años 2020 -->
+                            <div class="timeline-col col-yellow" data-decade="2023" id="col-decade-2023">
+                                <span class="timeline-top-label">Líder Poblacional</span>
+                                <div class="timeline-connector-pin"></div>
+                                <button class="timeline-decade-bubble" aria-label="Explorar década 2020">2020s</button>
+                                <div class="timeline-connector-downline"></div>
+                                <div class="timeline-desc-card">
+                                    <img src="images/foto_2020.jpg" alt="Líder Poblacional 2020s"
+                                        class="timeline-card-img">
+                                    <h4 class="card-decade-title">Líder Poblacional</h4>
+                                    <p class="card-decade-desc">India supera a China en población en 2023. Todo y así,
+                                        su crecimiento anual cae a 0.79%: inicio de estabilización demográfica.</p>
+                                    <a href="https://www.bbc.com/mundo/noticias-internacional-64088026" target="_blank"
+                                        class="timeline-card-link">🌐 Fuente Consultada</a>
+                                </div>
+                            </div>
+
+                            <!-- Creamos la columna de los años 2030 -->
+                            <div class="timeline-col col-orange" data-decade="prediction" id="col-decade-2030">
+                                <span class="timeline-top-label">Futuro 2035</span>
+                                <div class="timeline-connector-pin"></div>
+                                <button class="timeline-decade-bubble" aria-label="Explorar década 2030">2030s</button>
+                                <div class="timeline-connector-downline"></div>
+                                <div class="timeline-desc-card">
+                                    <img src="images/foto_2030.jpg" alt="Futuro 2035" class="timeline-card-img">
+                                    <h4 class="card-decade-title">Futuro 2035</h4>
+                                    <p class="card-decade-desc">Modelado predictivo de regresión. Estimación sobre la
+                                        cobertura universal de internet móvil y tecnologia.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- Diseñamos el pie de página -->
+        <footer class="app-footer">
+            <p class="footer-subtitle">Visualización de Datos · UOC 2026 · Francisco Escudero Sevilla</p>
+        </footer>
+    </div>
+
+    <!-- Cargamos la lógica de la aplicación -->
+    <script src="js/data.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>

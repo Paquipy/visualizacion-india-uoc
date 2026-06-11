@@ -1,0 +1,209 @@
+/* Definimos el sistema de diseño y las variables globales */
+:root {
+    --bg-base: #eef2f6;
+    --bg-surface: #ffffff;
+    --bg-surface-hover: #f8fafc;
+    --border-color: #e2e8f0;
+    --border-color-active: #6366f1;
+
+    --color-primary: #4f46e5;
+    --color-primary-rgb: 79, 70, 229;
+    --color-secondary: #0ea5e9;
+    --color-secondary-rgb: 14, 165, 233;
+    --color-accent: #10b981;
+
+    --font-titles: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --text-main: #0f172a;
+    --text-silver: #334155;
+    --text-muted: #64748b;
+
+    --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+    --shadow-premium: 0 10px 30px rgba(0, 0, 0, 0.04);
+    --shadow-glow-primary: 0 4px 15px rgba(79, 70, 229, 0.2);
+    --shadow-glow-secondary: 0 4px 15px rgba(14, 165, 233, 0.2);
+
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Reseteamos los estilos base */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    background-image: url('../images/tonw-india-1309206.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: var(--text-main);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Estilizamos el fondo dinámico */
+.glass-bg-blur {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+        rgba(238, 242, 246, 0);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    pointer-events: none;
+}
+
+/* Estilizamos la barra de desplazamiento */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-base);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    transition: var(--transition-smooth);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary);
+}
+
+/* Estilizamos el contenedor principal */
+.app-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 16px 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Estilizamos la cabecera */
+.app-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 32px 24px;
+    background: #0f172a;
+    /* Fondo oscuro para la cabecera */
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    /* Borde sutil semitransparente */
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Quitamos el borde superior original */
+.app-header::before {
+    display: none;
+}
+
+/* Borde inferior con los colores del tema */
+.app-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+}
+
+#main-title {
+    font-family: var(--font-titles);
+    font-size: 2.7rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+}
+
+.devanagari-accent {
+    background: linear-gradient(135deg, #ff9933 20%, #10b981 80%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    margin-right: 6px;
+    display: inline-block;
+    filter: drop-shadow(0 2px 6px rgba(255, 153, 51, 0.3));
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: #94a3b8;
+    font-weight: 400;
+    margin-top: 8px;
+    line-height: 1.5;
+}
+
+.header-data-source {
+    font-size: 0.82rem;
+    color: #94a3b8;
+    margin-top: 8px;
+    font-weight: 500;
+}
+
+.header-data-source strong {
+    color: #38bdf8;
+}
+
+.header-data-source-link {
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.header-data-source-link:hover strong {
+    text-decoration: underline;
+    opacity: 0.85;
+}
+
+.header-meta {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    font-size: 0.78rem;
+    color: #94a3b8;
+    margin-top: 14px;
+}
+
+.source-tag,
+.license-tag {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+}
+
+.source-tag strong,
+.license-tag strong {
+    color: #ffffff;
+}
